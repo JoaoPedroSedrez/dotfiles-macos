@@ -1,6 +1,6 @@
 [user]
-	name = CHANGEME
-	email = CHANGEME
+	name = João Pedro Sedrez
+	email = sedrez.jp2@gmail.com
 
 [init]
 	defaultBranch = main
@@ -33,6 +33,14 @@
 # 	format = ssh
 # [commit]
 # 	gpgsign = true
+
+# px-center repos go over HTTPS so they authenticate with the work gh token
+# that ~/Work/.envrc exports, even when cloned with a git@github.com: URL.
+# Lives here (not work.gitconfig) because includeIf gitdir doesn't match
+# during `git clone`, before the repo exists.
+[url "https://github.com/px-center/"]
+	insteadOf = git@github.com:px-center/
+	insteadOf = ssh://git@github.com/px-center/
 
 [credential "https://github.com"]
 	helper = 

@@ -93,7 +93,6 @@
       "obsidian"
       "raycast"
       "rectangle"
-      "secretive"
       "spotify"
       "t3-code"
       "visual-studio-code"

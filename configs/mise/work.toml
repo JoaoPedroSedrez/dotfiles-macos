@@ -1,0 +1,9 @@
+# ~/Work/.mise.toml — managed by ~/dotfiles (configs/mise/work.toml)
+#
+# Runtime overrides for every repo cloned under ~/Work/, same idea as
+# ~/Work/.envrc. px-center repos pin "packageManager": "pnpm@9.x", and
+# pnpm 10+ tries to self-switch to that version (and hangs), so run pnpm 9
+# here while the global config keeps the latest.
+
+[tools]
+pnpm = "9"

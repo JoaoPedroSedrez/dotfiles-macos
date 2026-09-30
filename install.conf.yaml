@@ -36,6 +36,7 @@
     ~/.zshrc: configs/zsh/zshrc
     ~/Library/Application Support/lazygit/config.yml: configs/lazygit/config.yml
     ~/Work/.envrc: configs/direnv/work.envrc
+    ~/Work/.mise.toml: configs/mise/work.toml
 
 - shell:
     - command: git submodule sync --recursive && git submodule update --init --recursive

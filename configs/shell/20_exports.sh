@@ -13,6 +13,17 @@ if [ -f "/opt/homebrew/bin/brew" ]; then
    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
+# -- Build deps for `mise install php` (compiled from source by vfox-php).
+# These Homebrew formulae are keg-only, so without this configure picks up
+# macOS's bison 2.3 and can't find openssl/icu/readline via pkg-config.
+_brew_opt="$(brew --prefix)/opt"
+export PATH="$_brew_opt/bison/bin:$_brew_opt/re2c/bin:$PATH"
+for _f in openssl@3 icu4c libiconv readline libzip oniguruma gd libsodium curl zlib bzip2 libxml2 libpq krb5 libedit gmp; do
+  [ -d "$_brew_opt/$_f/lib/pkgconfig" ] && PKG_CONFIG_PATH="$_brew_opt/$_f/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+done
+export PKG_CONFIG_PATH
+unset _brew_opt _f
+
 # -- Android / React Native
 export ANDROID_HOME="$(brew --prefix)/share/android-commandlinetools"
 # Without this the newer cmdline-tools honour XDG_CONFIG_HOME and look for

@@ -6,5 +6,11 @@
 java = "temurin-17"
 node = "lts"
 php = "8.3"
-python = "latest"
 pnpm = "latest"
+python = "latest"
+
+[settings]
+# The 3s default is too short on slow networks: php's version list (a git
+# clone of the vfox plugin + remote lookup) times out, and every shim call
+# then prints a warning and stalls.
+fetch_remote_versions_timeout = "30s"

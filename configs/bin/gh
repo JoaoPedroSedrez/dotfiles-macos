@@ -1,0 +1,18 @@
+#!/bin/sh
+# ~/.local/bin/gh — managed by ~/dotfiles (configs/bin/gh)
+#
+# Inside ~/Work, run gh as the work account. ~/Work/.envrc already does this
+# for terminals, but GUI apps (T3 Code, IDEs) snapshot the shell env once at
+# launch and never run direnv, so their gh would fall back to the active
+# (personal) account. An explicit GH_TOKEN/GITHUB_TOKEN still wins.
+real=/opt/homebrew/bin/gh
+
+if [ -z "$GH_TOKEN$GITHUB_TOKEN" ]; then
+  case "$PWD/" in
+    "$HOME"/[Ww]ork/*)
+      GH_TOKEN=$("$real" auth token --user JoaoPedroSedrezPX 2>/dev/null) && export GH_TOKEN
+      ;;
+  esac
+fi
+
+exec "$real" "$@"

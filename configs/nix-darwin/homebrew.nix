@@ -91,11 +91,13 @@
       "homerow"
       "karabiner-elements"
       "obsidian"
+      "phpstorm"
       "raycast"
       "rectangle"
       "spotify"
       "t3-code"
       "visual-studio-code"
+      "webstorm"
     ];
   };
 

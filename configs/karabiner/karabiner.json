@@ -45,6 +45,37 @@
                         ]
                     },
                     {
+                        "description": "Command tapped alone opens Mission Control (same as F3)",
+                        "manipulators": [
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "left_command",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [
+                                    { "key_code": "left_command" }
+                                ],
+                                "to_if_alone": [
+                                    { "apple_vendor_keyboard_key_code": "mission_control" }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": { "optional": ["any"] }
+                                },
+                                "to": [
+                                    { "key_code": "right_command" }
+                                ],
+                                "to_if_alone": [
+                                    { "apple_vendor_keyboard_key_code": "mission_control" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "description": "Hyper key app launchers",
                         "manipulators": [
                             {

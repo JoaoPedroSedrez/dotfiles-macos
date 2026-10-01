@@ -1,0 +1,18 @@
+#!/bin/sh
+# ~/.local/bin/organizar-livros — managed by ~/dotfiles (configs/bin/organizar-livros)
+#
+# Moves loose .pdf/.epub files in ~/livros into ~/livros/PDF and ~/livros/EPUB.
+# Run by the launchd agent in configs/nix-darwin/macos.nix whenever ~/livros
+# changes. `mv -n` never overwrites a book that's already there.
+dir="$HOME/livros"
+
+# Give a copy in progress a moment to finish before moving it.
+sleep 2
+
+for f in "$dir"/*; do
+  [ -f "$f" ] || continue
+  case "$(printf '%s' "$f" | tr '[:upper:]' '[:lower:]')" in
+    *.pdf) mv -n "$f" "$dir/PDF/" ;;
+    *.epub) mv -n "$f" "$dir/EPUB/" ;;
+  esac
+done

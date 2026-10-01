@@ -159,4 +159,13 @@
     # pam_reattach fixes that by reattaching to the session first.
     reattach = true;
   };
+
+  # Sort books dropped into ~/livros into its PDF/ and EPUB/ subfolders.
+  launchd.user.agents.organizar-livros = {
+    command = "/Users/admin/.local/bin/organizar-livros";
+    serviceConfig = {
+      WatchPaths = [ "/Users/admin/livros" ];
+      RunAtLoad = true;
+    };
+  };
 }

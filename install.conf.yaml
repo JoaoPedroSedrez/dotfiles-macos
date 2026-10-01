@@ -38,6 +38,7 @@
     ~/Work/.envrc: configs/direnv/work.envrc
     ~/Work/.mise.toml: configs/mise/work.toml
     ~/.local/bin/gh: configs/bin/gh
+    ~/.local/bin/organizar-livros: configs/bin/organizar-livros
 
 - shell:
     - command: git submodule sync --recursive && git submodule update --init --recursive

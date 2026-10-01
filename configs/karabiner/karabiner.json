@@ -94,6 +94,22 @@
                     },
                     "ignore": false,
                     "disable_built_in_keyboard_if_exists": true
+                },
+                {
+                    "identifiers": {
+                        "is_keyboard": true,
+                        "vendor_id": 3141,
+                        "product_id": 65278
+                    },
+                    "treat_as_built_in_keyboard": true
+                },
+                {
+                    "identifiers": {
+                        "is_pointing_device": true,
+                        "vendor_id": 3141,
+                        "product_id": 65278
+                    },
+                    "ignore": true
                 }
             ],
             "virtual_hid_keyboard": {

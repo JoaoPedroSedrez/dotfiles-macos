@@ -45,6 +45,14 @@
       # Automatically hide and show the dock.
       autohide = true;
 
+      # Show the hidden dock as soon as the cursor touches the bottom edge.
+      # The default delay resets whenever the pointer leaves the edge, so a
+      # physical mouse that jitters off it feels like it has to be forced.
+      autohide-delay = 0.0;
+
+      # Shorten the show/hide slide (1.0 is the default duration).
+      autohide-time-modifier = 0.4;
+
       # Icon size, in pixels. The default is 64.
       tilesize = 24;
 

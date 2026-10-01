@@ -18,7 +18,7 @@
                 },
                 "rules": [
                     {
-                        "description": "Caps Lock to Hyper Key (⌘⌃⌥⇧) when held, Escape when tapped alone, built-in keyboard only",
+                        "description": "Caps Lock to Hyper Key (⌘⌃⌥⇧) when held, Escape when tapped alone, all keyboards except the Sofle",
                         "manipulators": [
                             {
                                 "type": "basic",
@@ -37,8 +37,8 @@
                                 ],
                                 "conditions": [
                                     {
-                                        "type": "device_if",
-                                        "identifiers": [ { "is_built_in_keyboard": true } ]
+                                        "type": "device_unless",
+                                        "identifiers": [ { "vendor_id": 7504, "product_id": 24926 } ]
                                     }
                                 ]
                             }

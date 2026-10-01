@@ -56,7 +56,36 @@
     # take over ⌘Space instead. Set the Raycast side manually in its own
     # Settings > General — its hotkey preference uses a custom encoding
     # that isn't safe to write via `defaults write`.
-    CustomUserPreferences."com.apple.symbolichotkeys".AppleSymbolicHotKeys = {
+    #
+    # Also bind ⌘1–⌘9 to Mission Control's "Switch to Desktop N" (hotkey IDs
+    # 118–126). parameters are [ascii, keyCode, modifierFlags]; ascii is
+    # 65535 like the system defaults for these IDs, and the number row's
+    # keyCodes aren't sequential, hence the explicit list.
+    # 1048576 = cmd. A shortcut only works once that Space exists.
+    CustomUserPreferences."com.apple.symbolichotkeys".AppleSymbolicHotKeys =
+      builtins.listToAttrs (
+        builtins.genList (
+          i:
+          let
+            keyCodes = [ 18 19 20 21 23 22 26 28 25 ];
+          in
+          {
+            name = toString (118 + i);
+            value = {
+              enabled = true;
+              value = {
+                parameters = [
+                  65535
+                  (builtins.elemAt keyCodes i)
+                  1048576
+                ];
+                type = "standard";
+              };
+            };
+          }
+        ) 9
+      )
+      // {
       "64" = {
         enabled = false;
         value = {

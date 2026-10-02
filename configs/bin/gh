@@ -1,28 +1,37 @@
 #!/bin/sh
 # ~/.local/bin/gh — managed by ~/dotfiles (configs/bin/gh)
 #
-# Inside ~/Work, run gh as the work account. ~/Work/.envrc already does this
-# for terminals, but GUI apps (T3 Code, IDEs) snapshot the shell env once at
-# launch and never run direnv, so their gh would fall back to the active
-# (personal) account. An explicit GH_TOKEN/GITHUB_TOKEN still wins.
-# Outside ~/Work the work token is dropped (see below).
+# Run gh as the work account for work repos: anything under ~/Work, or any
+# repo whose origin is px-center/* (worktrees created elsewhere, like T3
+# Code's ~/.t3/worktrees, live outside ~/Work). ~/Work/.envrc already does
+# this for terminals, but GUI apps (T3 Code, IDEs) snapshot the shell env
+# once at launch and never run direnv, so their gh would fall back to the
+# active (personal) account. An explicit GH_TOKEN/GITHUB_TOKEN still wins.
+# Outside work repos the work token is dropped (see below).
 real=/opt/homebrew/bin/gh
 
 work_token() { "$real" auth token --user JoaoPedroSedrezPX 2>/dev/null; }
 
-case "$PWD/" in
-  "$HOME"/[Ww]ork/*)
-    if [ -z "$GH_TOKEN$GITHUB_TOKEN" ]; then
-      GH_TOKEN=$(work_token) && export GH_TOKEN
-    fi
-    ;;
-  *)
-    # A work token leaked from a shell that started in ~/Work (direnv
-    # exports it there) shouldn't follow you out; any other token is kept.
-    if [ -n "$GITHUB_TOKEN" ] && [ "$GITHUB_TOKEN" = "$(work_token)" ]; then
-      unset GITHUB_TOKEN
-    fi
-    ;;
-esac
+is_work_repo() {
+  case "$PWD/" in
+    "$HOME"/[Ww]ork/*) return 0 ;;
+  esac
+  case "$(git remote get-url origin 2>/dev/null)" in
+    *github.com[:/]px-center/*) return 0 ;;
+  esac
+  return 1
+}
+
+if is_work_repo; then
+  if [ -z "$GH_TOKEN$GITHUB_TOKEN" ]; then
+    GH_TOKEN=$(work_token) && export GH_TOKEN
+  fi
+else
+  # A work token leaked from a shell that started in ~/Work (direnv
+  # exports it there) shouldn't follow you out; any other token is kept.
+  if [ -n "$GITHUB_TOKEN" ] && [ "$GITHUB_TOKEN" = "$(work_token)" ]; then
+    unset GITHUB_TOKEN
+  fi
+fi
 
 exec "$real" "$@"

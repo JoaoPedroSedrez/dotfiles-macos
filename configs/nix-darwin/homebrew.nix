@@ -90,6 +90,7 @@
       "google-chrome"
       "homerow"
       "karabiner-elements"
+      "monitorcontrol"
       "obsidian"
       "phpstorm"
       "raycast"

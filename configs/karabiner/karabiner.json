@@ -109,6 +109,14 @@
                                     "modifiers": { "mandatory": ["command", "control", "option", "shift"] }
                                 },
                                 "to": [ { "shell_command": "open -b 'com.t3tools.t3code'" } ]
+                            },
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "e",
+                                    "modifiers": { "mandatory": ["command", "control", "option", "shift"] }
+                                },
+                                "to": [ { "shell_command": "open -a 'Finder'" } ]
                             }
                         ]
                     }

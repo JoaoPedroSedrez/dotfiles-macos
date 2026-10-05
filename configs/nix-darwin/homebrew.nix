@@ -101,6 +101,7 @@
       "spotify"
       "t3-code"
       "teleport-connect"
+      "thaw"
       "visual-studio-code"
       "vorssaint"
       "webstorm"

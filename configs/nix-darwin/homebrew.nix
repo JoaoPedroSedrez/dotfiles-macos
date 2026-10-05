@@ -20,6 +20,7 @@
       "atuin"
       "autoconf"
       "automake"
+      "awscli"
       "bat"
       "bison"
       "btop"

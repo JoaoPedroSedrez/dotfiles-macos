@@ -80,6 +80,7 @@
     casks = [
       "android-commandlinetools"
       "arc"
+      "claude"
       "claude-code@latest"
       "codex"
       "datagrip"
@@ -95,9 +96,12 @@
       "phpstorm"
       "raycast"
       "rectangle"
+      "shottr"
       "spotify"
       "t3-code"
+      "teleport-connect"
       "visual-studio-code"
+      "vorssaint"
       "webstorm"
     ];
   };

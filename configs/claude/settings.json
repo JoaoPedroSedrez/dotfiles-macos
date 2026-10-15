@@ -64,7 +64,9 @@
   },
   "enabledPlugins": {
     "swift-lsp@claude-plugins-official": true,
-    "figma@claude-plugins-official": true
+    "figma@claude-plugins-official": true,
+    "superpowers@anthropic-plugin-directory": true,
+    "frontend-design@anthropic-plugin-directory": true
   },
   "feedbackSurveyRate": 0,
   "feedbackDrafts": "off",

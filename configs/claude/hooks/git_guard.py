@@ -1,6 +1,6 @@
 """Shared detection logic for the block-git-rewrites hooks (Claude/Codex/Gemini).
 
-Blocks dangerous git commands: amend, force push, push to main, git add -A,
+Blocks dangerous git commands: amend, force push, git add -A,
 and gh pr merge. Most blocks are overridable: prefixing the command with
 OVERRIDE_MARKER (only when the user explicitly approved the action in
 conversation) lets the tool-specific adapter escalate or allow it.
@@ -11,7 +11,6 @@ to the adapter here, and the Gemini adapter imports this module by path.
 """
 
 import re
-import subprocess
 
 OVERRIDE_MARKER = "EXPLICITLY_USER_APPROVED_HOOK_OVERRIDE=1"
 
@@ -33,9 +32,6 @@ BLOCKED_PATTERNS = [
     (rf"{_GIT_CMD}add\b.*--all\b", "git add --all is not allowed - add files explicitly to avoid adding unrelated untracked files", False),
     (r"\bgh\s+pr\s+merge\b", "gh pr merge is not allowed - the user must merge PRs themselves, never the agent", True),
 ]
-
-PROTECTED_BRANCHES = {"main", "master"}
-
 
 def strip_quoted_strings(command: str) -> str:
     """Remove quoted strings and heredocs to avoid false positives.
@@ -59,43 +55,6 @@ def strip_quoted_strings(command: str) -> str:
     return result
 
 
-def extract_git_directory(command: str) -> str | None:
-    """Extract the directory from git -C flag if present.
-
-    Handles: git -C /path, git -C"/path", git -C '/path'
-    """
-    # Match -C with optional space, then quoted or unquoted path
-    match = re.search(
-        r"\bgit\s+-C\s*(?:\"([^\"]+)\"|'([^']+)'|(\S+))",
-        command,
-    )
-    if match:
-        return match.group(1) or match.group(2) or match.group(3)
-    return None
-
-
-def get_current_branch(git_dir: str | None = None) -> str | None:
-    """Get the current git branch name.
-
-    Args:
-        git_dir: Optional directory to check (for git -C support)
-    """
-    try:
-        cmd = ["git"]
-        if git_dir:
-            cmd.extend(["-C", git_dir])
-        cmd.extend(["branch", "--show-current"])
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=5,
-        )
-        return result.stdout.strip() if result.returncode == 0 else None
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        return None
-
-
 def check_blocked_patterns(command: str) -> tuple[str, bool] | None:
     """Check if command matches any blocked pattern.
 
@@ -104,47 +63,6 @@ def check_blocked_patterns(command: str) -> tuple[str, bool] | None:
     for pattern, message, overridable in BLOCKED_PATTERNS:
         if re.search(pattern, command, re.IGNORECASE):
             return message, overridable
-    return None
-
-
-def check_push_to_protected_branch(
-    command: str, original_command: str | None = None
-) -> str | None:
-    """Check if command pushes to a protected branch.
-
-    Args:
-        command: The command to check (may have quotes stripped)
-        original_command: Original command with quotes intact (for -C extraction)
-
-    Returns error message if blocked, None if allowed.
-    """
-    # Pattern: git (with optional global options) push
-    git_push_pattern = rf"{_GIT_CMD}push\b"
-    if not re.search(git_push_pattern, command, re.IGNORECASE):
-        return None
-
-    # Check for explicit push to protected branch (e.g., git push origin main)
-    for branch in PROTECTED_BRANCHES:
-        if re.search(rf"{_GIT_CMD}push\b.*\b{branch}\b", command, re.IGNORECASE):
-            return f"git push to {branch} is not allowed - use a PR"
-
-    # Check if currently on protected branch and pushing without explicit branch
-    # This matches: "git push", "git push origin", "git -C /path push"
-    # But not: "git push origin feature-branch", "git stash push"
-    push_match = re.search(rf"{_GIT_CMD}push\b(.*)$", command, re.IGNORECASE)
-    if push_match:
-        args = push_match.group(1).strip()
-        # Remove flags like -u, --set-upstream, etc.
-        args_without_flags = re.sub(r"\s*-[a-zA-Z]\b|\s*--[\w-]+", "", args).strip()
-        parts = args_without_flags.split()
-        # If 0 or 1 parts (no args or just remote), check current branch
-        if len(parts) <= 1:
-            # Extract -C directory from original command (preserves quoted paths)
-            git_dir = extract_git_directory(original_command or command)
-            current_branch = get_current_branch(git_dir)
-            if current_branch in PROTECTED_BRANCHES:
-                return f"git push while on {current_branch} is not allowed - use a PR"
-
     return None
 
 
@@ -174,12 +92,6 @@ def check_command(command: str) -> tuple[str, bool] | None:
     # Split on shell separators and check each command individually
     for cmd in split_shell_commands(stripped):
         result = check_blocked_patterns(cmd)
-        if result is None:
-            # For branch detection, find corresponding original command segment
-            # Use the full original for -C extraction (it's OK if imprecise)
-            error = check_push_to_protected_branch(cmd, original_command=command)
-            if error:
-                result = error, True
         if result:
             if not result[1]:
                 return result

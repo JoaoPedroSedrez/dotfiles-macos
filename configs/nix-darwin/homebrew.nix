@@ -17,6 +17,7 @@
 
     # CLI tools. Add one line per package, e.g. "starship", "eza", "fzf".
     brews = [
+      "aria2"
       "atuin"
       "autoconf"
       "automake"
@@ -70,6 +71,7 @@
       "starship"
       "tmux"
       "webp"
+      "xcodes"
       "yazi"
       "zlib"
       "zoxide"

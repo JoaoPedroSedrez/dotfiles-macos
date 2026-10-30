@@ -168,4 +168,16 @@
       RunAtLoad = true;
     };
   };
+
+  # Relaunch MonitorControl when the monitor reconnects or the Mac wakes —
+  # otherwise its brightness keys stop working (see the script for why).
+  launchd.user.agents.monitorcontrol-watchdog = {
+    command = "/Users/admin/.local/bin/monitorcontrol-watchdog";
+    serviceConfig = {
+      RunAtLoad = true;
+      KeepAlive = true;
+      StandardOutPath = "/Users/admin/Library/Logs/monitorcontrol-watchdog.log";
+      StandardErrorPath = "/Users/admin/Library/Logs/monitorcontrol-watchdog.log";
+    };
+  };
 }

@@ -1,0 +1,15 @@
+#!/bin/sh
+# ~/.local/bin/monitorcontrol-watchdog — managed by ~/dotfiles (configs/bin/monitorcontrol-watchdog)
+#
+# Compiles monitorcontrol-watchdog.swift (next to this file) when it changed
+# and runs it. `swift file.swift` would interpret it instead, which keeps the
+# whole compiler resident (~350MB) for a process that just sits waiting.
+set -e
+src="$HOME/dotfiles/configs/bin/monitorcontrol-watchdog.swift"
+bin="$HOME/Library/Caches/monitorcontrol-watchdog/monitorcontrol-watchdog"
+
+if [ ! -x "$bin" ] || [ "$src" -nt "$bin" ]; then
+  mkdir -p "$(dirname "$bin")"
+  /usr/bin/swiftc -O -o "$bin" "$src"
+fi
+exec "$bin"

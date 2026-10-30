@@ -2,3 +2,16 @@
 
 [user]
 	email = joao.sedrez@px.center
+	# Must also be registered as a *Signing Key* on the JoaoPedroSedrezPX
+	# GitHub account (Settings > SSH and GPG keys).
+	signingkey = ~/.ssh/id_ed25519_px_signing.pub
+
+# Platform requires signed commits on px-center repos since 2026-11-03.
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	allowedSignersFile = ~/dotfiles/configs/git/allowed_signers_work
+[commit]
+	gpgsign = true
+[tag]
+	gpgsign = true

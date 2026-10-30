@@ -1,10 +1,31 @@
 # Secretive
 
-SSH keys for this setup live in [Secretive](https://github.com/maxgoedjen/secretive):
-they're generated inside the Mac's Secure Enclave, can't be exported, and
-every use asks for Touch ID. `configs/ssh/config` points every SSH
-connection at Secretive's agent, and the cask is in
-`configs/nix-darwin/homebrew.nix`.
+> **Not in use right now.** Secretive isn't installed (no cask in
+> `configs/nix-darwin/homebrew.nix`) and `configs/ssh/config` uses the
+> stock macOS agent. Work commits are signed with a regular key instead;
+> see [Work commit signing](#work-commit-signing) below. The rest of this
+> doc is how to switch to Secretive.
+
+[Secretive](https://github.com/maxgoedjen/secretive) generates SSH keys
+inside the Mac's Secure Enclave: they can't be exported, and every use
+asks for Touch ID.
+
+## Work commit signing
+
+px-center requires signed commits (since 2026-11-03). Inside `~/Work`,
+`configs/git/work.gitconfig` signs every commit and tag with
+`~/.ssh/id_ed25519_px_signing`, an ed25519 key whose passphrase lives in
+the login Keychain. Only the public half is in this repo
+(`configs/git/allowed_signers_work`, for `git log --show-signature`).
+
+- The key is registered as a **Signing Key** on the `JoaoPedroSedrezPX`
+  GitHub account, and `joao.sedrez@px.center` is verified there.
+- `configs/shell/30_ssh_agent.sh` runs `ssh-add --apple-load-keychain` in
+  new shells, since `ssh-keygen -Y sign` ignores `AddKeysToAgent`.
+- New machine: `ssh-keygen -t ed25519 -C joao.sedrez@px.center -f
+  ~/.ssh/id_ed25519_px_signing`, then `ssh-add --apple-use-keychain` on
+  it, register the new `.pub` on GitHub and replace the line in
+  `allowed_signers_work`.
 
 We don't need SSH for GitHub itself: git talks to GitHub over HTTPS with
 `gh` as the credential helper (`configs/git/gitconfig`). Secretive covers

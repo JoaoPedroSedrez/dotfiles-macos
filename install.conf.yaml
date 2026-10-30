@@ -39,8 +39,14 @@
     ~/Work/.mise.toml: configs/mise/work.toml
     ~/.local/bin/gh: configs/bin/gh
     ~/.local/bin/organizar-livros: configs/bin/organizar-livros
+    ~/.local/bin/monitorcontrol-watchdog: configs/bin/monitorcontrol-watchdog
 
 - shell:
+    # Keeps the PX autoMode block in configs/claude/settings.json out of
+    # commits; see scripts/claude-settings-filter.sh.
+    - command: git config filter.claude-settings.clean 'scripts/claude-settings-filter.sh clean' && git config filter.claude-settings.smudge 'scripts/claude-settings-filter.sh smudge' && git config filter.claude-settings.required true
+      stdout: true
+      stderr: true
     - command: git submodule sync --recursive && git submodule update --init --recursive
       stdout: true
       stderr: true

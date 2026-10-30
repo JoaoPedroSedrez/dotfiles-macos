@@ -1,3 +1,8 @@
 .DS_Store
 *.swp
 __pycache__/
+
+# Work-specific (PX) config kept out of the public repo; see
+# scripts/claude-settings-filter.sh and configs/shell/main.sh.
+*.local.json
+*.local.sh
